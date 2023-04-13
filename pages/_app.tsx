@@ -18,9 +18,13 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={client}>
       <ConnectKitProvider>
-        <section>
+        <header className='p-4 flex justify-between'>
+          <div className='flex items-center gap-4'>
+            <img src="./piroshki-logo.png" className='w-8' />
+            <div className='text-white text-2xl'>Piroshki</div>
+          </div>
           <ConnectKitButton />
-        </section>
+        </header>
         <Component {...pageProps} address={address} />
       </ConnectKitProvider>
     </WagmiConfig>

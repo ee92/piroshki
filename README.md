@@ -1,3 +1,7 @@
+<img src="./public/piroshki-logo.png" width="100" />
+
+# Piroshki 
+
 ## Getting Started
 
 Prerequisites:
