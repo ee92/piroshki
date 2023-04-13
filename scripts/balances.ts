@@ -20,9 +20,9 @@ async function main() {
   const icosaTotalSupply = await icosa.totalSupply();
 
   console.log("OWNER:", owner.address);
-  console.log("HEX:", hexBalance, hexTotalSupply);
-  console.log("HDRN:", hedronBalance, hedronTotalSupply);
-  console.log("ICSA:", icosaBalance, icosaTotalSupply);
+  console.log(`HEX: balance - ${hexBalance} | supply - ${hexTotalSupply}`);
+  console.log(`HDRN: balance - ${hedronBalance} | supply - ${hedronTotalSupply}`);
+  console.log(`ICSA: balance - ${icosaBalance} | supply - ${icosaTotalSupply}`);
 }
 
 main()

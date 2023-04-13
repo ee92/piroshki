@@ -20,10 +20,8 @@ async function main() {
   const approveTx = await wethToken.approve(uniswapRouterV3Address, wrapAmount);
   await approveTx.wait();
 
-  // Set slippage, deadline, and the amount of Ether to swap
-  const slippageTolerance = ethers.utils.parseUnits("1", 16); // 1% slippage tolerance
-  const amountIn = ethers.utils.parseEther("1"); // Swap 1 Ether
-  const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // Deadline set to 20 minutes from now
+  // Deadline set to 20 minutes from now
+  const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 
   const swapParams = {
     tokenIn: wethAddress,
@@ -31,25 +29,19 @@ async function main() {
     fee: 3000,
     recipient: owner.address,
     deadline,
-    amountIn,
+    amountIn: wrapAmount,
     amountOutMinimum: 0,
     sqrtPriceLimitX96: 0,
   }
 
-  // Estimate the output amount
-  const amountsOut = await uniswapV3Router.callStatic.exactInputSingle(swapParams);
-
-  // Calculate the minimum amount of tokens to receive, considering the slippage tolerance
-  const amountOutMinimum = amountsOut.mul(ethers.utils.parseUnits("1", 18).sub(slippageTolerance)).div(ethers.utils.parseUnits("1", 18));
-
   // Execute the swap
   const tx = await uniswapV3Router.exactInputSingle(
-    { ...swapParams, amountOutMinimum },
-    { value: amountIn, gasLimit: 250000 }
+    swapParams,
+    { value: wrapAmount, gasLimit: 250000 }
   );
 
   await tx.wait();
-  console.log("Swap executed successfully", tx);
+  console.log("Swap executed successfully");
 }
 
 main()

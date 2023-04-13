@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "hardhat": "npx hardhat node",
-    "fund": "npx hardhat --network localhost run scripts/buyHex.ts && npx hardhat --network localhost run scripts/buyHedron.ts && npx hardhat --network localhost run scripts/buyIcosa.ts"
+    "fund": "npx hardhat --network localhost run scripts/buyHex.ts && npx hardhat --network localhost run scripts/buyHedron.ts && npx hardhat --network localhost run scripts/buyIcosa.ts && npx hardhat --network localhost run scripts/balances.ts"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.13",

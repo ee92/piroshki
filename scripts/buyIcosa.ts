@@ -2,16 +2,13 @@ import { ethers } from "ethers";
 import hre from "hardhat";
 import { uniswapRouterV3Address, uniswapRouterV3ABI, wethAddress, wethABI } from "../utils/uniswap";
 import { icosaAddress, icosaABI } from "../utils/icosa";
-import { hexAddress, hexABI } from "../utils/hex";
 
 async function main() {
   // Your local account
   const [owner] = await hre.ethers.getSigners();
 
   // Create a contract instance for the Uniswap V3 router
-  const hexToken = new ethers.Contract(hexAddress, hexABI, owner);
   const wethToken = new ethers.Contract(wethAddress, wethABI, owner);
-  const icosa = new ethers.Contract(icosaAddress, icosaABI, owner);
   const uniswapV3Router = new ethers.Contract(uniswapRouterV3Address, uniswapRouterV3ABI, owner);
 
   // Wrap Ether into WETH
@@ -23,29 +20,24 @@ async function main() {
   const approveWeth = await wethToken.approve(uniswapRouterV3Address, wrapAmount);
   await approveWeth.wait();
 
-  const approveHex = await hexToken.approve(uniswapRouterV3Address, 2074340783033);
-  await approveHex.wait();
-
-  const approveIcosa = await icosa.approve(uniswapRouterV3Address, 20743407830330);
-  await approveIcosa.wait();
-  // Set slippage, deadline, and the amount of Ether to swap
-  const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // Deadline set to 20 minutes from now
+  // Deadline set to 20 minutes from now
+  const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
 
   const swapParams = {
-    tokenIn: hexAddress,
+    tokenIn: wethAddress,
     tokenOut: icosaAddress,
-    fee: 3000,
+    fee: 10000,
     recipient: owner.address,
     deadline,
-    amountIn: 2000040783033,
-    amountOutMinimum: 10,
-    sqrtPriceLimitX96: 0,
+    amountIn: wrapAmount,
+    amountOutMinimum: 0,
+    sqrtPriceLimitX96: 0
   }
 
   // Execute the swap
   const tx = await uniswapV3Router.exactInputSingle(
     swapParams,
-    { value: 2000040783033, gasLimit: 250000 }
+    { value: wrapAmount, gasLimit: 250000 }
   );
 
   await tx.wait();
