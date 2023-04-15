@@ -1,9 +1,11 @@
-
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import useIcosaData from '../../hooks/useIcosa';
-import { stakeLengthToClassEmoji, stakeLengthToMaxPortionOfSupply } from '../../utils/staking';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi'
-import { icosaABI, icosaAddress } from '../../utils/icosa';
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import useIcosaData from "../../hooks/useIcosa";
+import {
+  stakeLengthToClassEmoji,
+  stakeLengthToMaxPortionOfSupply,
+} from "../../utils/staking";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { icosaABI, icosaAddress } from "../../utils/icosa";
 
 function StakeIcosa() {
   const [stakeAmount, setStakeAmount] = useState("");
@@ -33,7 +35,7 @@ function StakeIcosa() {
       return 0;
     }
     return supply * maxPortionOfSupply;
-  }
+  };
 
   useEffect(() => {
     setStakeCount(getMinNumStakes());
@@ -42,22 +44,24 @@ function StakeIcosa() {
   const { config } = usePrepareContractWrite({
     address: icosaAddress,
     abi: icosaABI,
-    functionName: 'icsaStakeStart',
+    functionName: "icsaStakeStart",
     args: [Number(stakeAmount) * 1000000000],
-    enabled: Number(stakeAmount) > 0 && Number(stakeAmount) <= balance
+    enabled: Number(stakeAmount) > 0 && Number(stakeAmount) <= balance,
   });
   const { isLoading, isSuccess, write } = useContractWrite(config);
 
   const handleAmountInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const cleanedInput = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+    const cleanedInput = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*)\./g, "$1");
     setStakeAmount(cleanedInput);
-  }
+  };
 
   const handleStakeClick = () => {
     if (write) {
-      write()
+      write();
     }
-  }
+  };
 
   return (
     <div>
@@ -67,11 +71,11 @@ function StakeIcosa() {
           <input
             value={stakeAmount || ""}
             onChange={handleAmountInput}
-            className="bg-white hover:bg-gray-100 text-black font-bold py-2 px-4 rounded flex-grow"
+            className="flex-grow rounded bg-white px-4 py-2 font-bold text-black hover:bg-gray-100"
           />
           <button
             onClick={() => setStakeAmount(balance.toString())}
-            className="bg-gray-400 hover:bg-gray-500 text-black font-bold py-2 px-4 rounded"
+            className="rounded bg-gray-400 px-4 py-2 font-bold text-black hover:bg-gray-500"
           >
             Max
           </button>
@@ -79,12 +83,12 @@ function StakeIcosa() {
       </div>
       <div className="pb-4">
         <div className="flex justify-between gap-4">
-          <div className="w-full flex flex-col">
+          <div className="flex w-full flex-col">
             <div>Length</div>
             <select
               value={stakeLength}
               onChange={(e) => setStakeLength(Number(e.target.value))}
-              className="bg-white hover:bg-gray-100 text-black font-bold py-2 px-4 rounded w-full h-full"
+              className="h-full w-full rounded bg-white px-4 py-2 font-bold text-black hover:bg-gray-100"
             >
               <option value={30}>30 days</option>
               <option value={90}>90 days</option>
@@ -95,15 +99,17 @@ function StakeIcosa() {
           <div className="w-full">
             <div>Max Stake</div>
             <input
-              value={`${(Math.floor(getMaxAmountPerStake() * 100) / 100)} ICSA`}
+              value={`${Math.floor(getMaxAmountPerStake() * 100) / 100} ICSA`}
               readOnly
               disabled
-              className="bg-gray-200 text-black font-bold py-2 px-4 rounded w-full"
+              className="w-full rounded bg-gray-200 px-4 py-2 font-bold text-black"
             />
           </div>
           <div>
             <div>Rank</div>
-            <div className="text-3xl">{stakeLengthToClassEmoji.get(stakeLength)}</div>
+            <div className="text-3xl">
+              {stakeLengthToClassEmoji.get(stakeLength)}
+            </div>
           </div>
         </div>
       </div>
@@ -114,10 +120,10 @@ function StakeIcosa() {
             value={stakeCount}
             readOnly
             disabled
-            className="bg-gray-200 text-black font-bold py-2 px-4 rounded flex-grow"
+            className="flex-grow rounded bg-gray-200 px-4 py-2 font-bold text-black"
           />
           <button
-            className="bg-emerald-400 hover:bg-emerald-500 text-black font-bold py-2 px-4 rounded"
+            className="rounded bg-emerald-400 px-4 py-2 font-bold text-black hover:bg-emerald-500"
             onClick={handleStakeClick}
             disabled={isLoading}
           >
@@ -126,7 +132,7 @@ function StakeIcosa() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default StakeIcosa;

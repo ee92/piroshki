@@ -1,1 +1,1 @@
-export { default } from './StakeIcosa';
+export { default } from "./StakeIcosa";

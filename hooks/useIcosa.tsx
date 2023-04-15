@@ -1,18 +1,32 @@
-import { ethers } from 'ethers';
-import { useAccount, useContractReads } from 'wagmi'
-import { IcosaBalance, IcosaCurrentDay, IcosaDecimals, IcosaSupply, NativeStakeData, NativeStakeDisplayData } from '../types/TokenData';
-import { icosaABI, icosaAddress } from '../utils/icosa';
-import { getStakeDaysRemaining } from '../utils/staking';
+import { ethers } from "ethers";
+import { useAccount, useContractReads } from "wagmi";
+import {
+  IcosaBalance,
+  IcosaCurrentDay,
+  IcosaDecimals,
+  IcosaSupply,
+  NativeStakeData,
+  NativeStakeDisplayData,
+} from "../types/TokenData";
+import { icosaABI, icosaAddress } from "../utils/icosa";
+import { getStakeDaysRemaining } from "../utils/staking";
 
-type IcosaPayload = [IcosaBalance, IcosaDecimals, IcosaSupply, IcosaCurrentDay, NativeStakeData, NativeStakeData];
+type IcosaPayload = [
+  IcosaBalance,
+  IcosaDecimals,
+  IcosaSupply,
+  IcosaCurrentDay,
+  NativeStakeData,
+  NativeStakeData
+];
 type IcosaData = {
   supply: number;
   balance: number;
   stakes: {
-    hdrn: NativeStakeDisplayData,
-    icsa: NativeStakeDisplayData
-  }
-}
+    hdrn: NativeStakeDisplayData;
+    icsa: NativeStakeDisplayData;
+  };
+};
 
 const TRILLION_DECIMALS = 12;
 
@@ -24,39 +38,40 @@ function useIcosaData() {
       {
         address: icosaAddress,
         abi: icosaABI,
-        functionName: 'balanceOf',
-        args: [address]
+        functionName: "balanceOf",
+        args: [address],
       },
       {
         address: icosaAddress,
         abi: icosaABI,
-        functionName: 'decimals',
+        functionName: "decimals",
       },
       {
         address: icosaAddress,
         abi: icosaABI,
-        functionName: 'totalSupply',
+        functionName: "totalSupply",
       },
       {
         address: icosaAddress,
         abi: icosaABI,
-        functionName: 'currentDay',
+        functionName: "currentDay",
       },
       {
         address: icosaAddress,
         abi: icosaABI,
-        functionName: 'icsaStakes',
-        args: [address]
+        functionName: "icsaStakes",
+        args: [address],
       },
       {
         address: icosaAddress,
         abi: icosaABI,
-        functionName: 'hdrnStakes',
-        args: [address]
-      }
+        functionName: "hdrnStakes",
+        args: [address],
+      },
     ],
     select: (data): IcosaData => {
-      const [balance, decimals, supply, currentDay, icsaStake, hdrnStake] = data as IcosaPayload;
+      const [balance, decimals, supply, currentDay, icsaStake, hdrnStake] =
+        data as IcosaPayload;
       return {
         balance: Number(ethers.utils.formatUnits(balance, decimals)),
         supply: Number(ethers.utils.formatUnits(supply, decimals)),
@@ -64,20 +79,28 @@ function useIcosaData() {
           hdrn: {
             isActive: hdrnStake.isActive,
             minStakeLength: hdrnStake.minStakeLength,
-            stakeAmount: Number(ethers.utils.formatUnits(hdrnStake.stakeAmount, decimals)),
+            stakeAmount: Number(
+              ethers.utils.formatUnits(hdrnStake.stakeAmount, decimals)
+            ),
             stakeDaysRemaining: getStakeDaysRemaining(hdrnStake, currentDay),
-            stakePoints: Number(ethers.utils.formatUnits(hdrnStake.stakePoints, TRILLION_DECIMALS))
+            stakePoints: Number(
+              ethers.utils.formatUnits(hdrnStake.stakePoints, TRILLION_DECIMALS)
+            ),
           },
           icsa: {
             isActive: icsaStake.isActive,
             minStakeLength: icsaStake.minStakeLength,
-            stakeAmount: Number(ethers.utils.formatUnits(icsaStake.stakeAmount, decimals)),
+            stakeAmount: Number(
+              ethers.utils.formatUnits(icsaStake.stakeAmount, decimals)
+            ),
             stakeDaysRemaining: getStakeDaysRemaining(icsaStake, currentDay),
-            stakePoints: Number(ethers.utils.formatUnits(icsaStake.stakePoints, TRILLION_DECIMALS))
-          }
-        }
+            stakePoints: Number(
+              ethers.utils.formatUnits(icsaStake.stakePoints, TRILLION_DECIMALS)
+            ),
+          },
+        },
       };
-    }
+    },
   });
 }
 

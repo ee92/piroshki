@@ -17,7 +17,8 @@ Icosa
 - Piroshki lets you withdraw your Icosa and Hedron yields from each stake into your wallet
 
 Advanced features
-- Compound Icosa: all Icosa goes back into into the Piroshki address and held as liquid 
+
+- Compound Icosa: all Icosa goes back into into the Piroshki address and held as liquid
 - Optimize stakes: check each stake
-    - if you all stakes and re-stake with interest, will you have more B-Points?
-        - if so, run `endStake` for each and then `stakeLiquid`
+  - if you all stakes and re-stake with interest, will you have more B-Points?
+    - if so, run `endStake` for each and then `stakeLiquid`

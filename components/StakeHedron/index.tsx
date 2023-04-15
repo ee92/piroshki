@@ -1,1 +1,1 @@
-export { default } from './StakeHedron';
+export { default } from "./StakeHedron";

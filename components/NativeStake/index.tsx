@@ -1,1 +1,1 @@
-export { default } from './NativeStake';
+export { default } from "./NativeStake";

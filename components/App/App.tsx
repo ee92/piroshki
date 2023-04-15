@@ -1,16 +1,16 @@
-'use client';
-import styles from './App.module.css';
+"use client";
+import styles from "./App.module.css";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import DialogButton from '../DialogButton';
-import StakeHedron from '../StakeHedron';
+import DialogButton from "../DialogButton";
+import StakeHedron from "../StakeHedron";
 import StakeIcosa from "../StakeIcosa";
-import useHedronData from '../../hooks/useHedron';
-import useHexData from '../../hooks/useHex';
-import useIcosaData from '../../hooks/useIcosa';
-import NativeStake from '../NativeStake';
-import Card from '../Card';
+import useHedronData from "../../hooks/useHedron";
+import useHexData from "../../hooks/useHex";
+import useIcosaData from "../../hooks/useIcosa";
+import NativeStake from "../NativeStake";
+import Card from "../Card";
 
 export default function App() {
   const { data: hexData } = useHexData();
@@ -20,14 +20,14 @@ export default function App() {
 
   useEffect(() => {
     setHasMounted(true);
-  }, [])
+  }, []);
 
   if (!hasMounted) {
     return null;
   }
 
   return (
-    <div className="p-4 flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-4">
       <div className="flex gap-4">
         <Card>
           <label htmlFor="hex">HEX</label>
@@ -47,5 +47,5 @@ export default function App() {
       <NativeStake type="HDRN" stake={icosaData?.stakes.hdrn} />
       <NativeStake type="ICSA" stake={icosaData?.stakes.icsa} />
     </div>
-  )
+  );
 }

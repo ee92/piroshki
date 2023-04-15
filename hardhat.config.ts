@@ -9,9 +9,9 @@ const config: HardhatUserConfig = {
       forking: {
         url: `https://mainnet.infura.io/v3/${process.env.ETH_API_PROVIDER_KEY}`,
       },
-      initialBaseFeePerGas: 0
-    }
-  }
+      initialBaseFeePerGas: 0,
+    },
+  },
 };
 
 export default config;

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Dialog from "../Dialog";
-import styles from './DialogButton.module.css';
+import styles from "./DialogButton.module.css";
 
 interface DialogButtonProps {
-  title: string,
-  component: React.FC
+  title: string;
+  component: React.FC;
 }
 
 function DialogButton(props: DialogButtonProps) {
@@ -13,7 +13,7 @@ function DialogButton(props: DialogButtonProps) {
   return (
     <>
       <button
-        className="bg-emerald-400 hover:bg-emerald-500 text-black font-bold py-2 px-4 rounded"
+        className="rounded bg-emerald-400 px-4 py-2 font-bold text-black hover:bg-emerald-500"
         onClick={() => setOpen(true)}
       >
         {title}
@@ -25,7 +25,7 @@ function DialogButton(props: DialogButtonProps) {
         render={component}
       />
     </>
-  )
+  );
 }
 
 export default DialogButton;
