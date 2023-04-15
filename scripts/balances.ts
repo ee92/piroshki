@@ -1,6 +1,6 @@
 import hre from "hardhat";
 import { ethers } from "ethers";
-import { hedronABI, hedronAddress, } from "../utils/hedron";
+import { hedronABI, hedronAddress } from "../utils/hedron";
 import { icosaABI, icosaAddress } from "../utils/icosa";
 import { hexABI, hexAddress } from "../utils/hex";
 
@@ -21,7 +21,9 @@ async function main() {
 
   console.log("OWNER:", owner.address);
   console.log(`HEX: balance - ${hexBalance} | supply - ${hexTotalSupply}`);
-  console.log(`HDRN: balance - ${hedronBalance} | supply - ${hedronTotalSupply}`);
+  console.log(
+    `HDRN: balance - ${hedronBalance} | supply - ${hedronTotalSupply}`
+  );
   console.log(`ICSA: balance - ${icosaBalance} | supply - ${icosaTotalSupply}`);
 }
 

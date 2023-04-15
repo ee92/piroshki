@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber } from "ethers";
 
 export type HexBalance = BigNumber;
 export type HexSupply = BigNumber;
@@ -22,7 +22,7 @@ export type NativeStakeData = {
   payoutPreCapitalAddHdrn: BigNumber;
   stakeAmount: BigNumber;
   minStakeLength: number;
-}
+};
 
 export type NativeStakeDisplayData = {
   isActive: boolean;
@@ -30,4 +30,4 @@ export type NativeStakeDisplayData = {
   stakeAmount: number;
   minStakeLength: number;
   stakeDaysRemaining: number;
-}
+};

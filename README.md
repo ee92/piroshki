@@ -1,10 +1,11 @@
 <img src="./public/piroshki-logo.png" width="100" />
 
-# Piroshki 
+# Piroshki
 
 ## Getting Started
 
 Prerequisites:
+
 - create Infura or Alchemy account and get API key
 - create .env file in the project root with `ETH_API_PROVIDER_KEY="<your-api-key>"`
 - download Metamask

@@ -1,6 +1,9 @@
-import { BigNumber } from 'ethers';
+import { BigNumber } from "ethers";
 
-export function formatTokenCount(amount: BigNumber | null, decimals: number): number {
+export function formatTokenCount(
+  amount: BigNumber | null,
+  decimals: number
+): number {
   if (!amount) {
     return 0;
   }
