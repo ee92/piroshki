@@ -1,6 +1,8 @@
+import { commify } from "ethers/lib/utils.js";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import useHedronData from "../../hooks/useHedron";
+import { formatHedron, parseHedron } from "../../utils/format";
 import { icosaABI, icosaAddress } from "../../utils/icosa";
 import {
   stakeLengthToClassEmoji,
@@ -9,25 +11,25 @@ import {
 import styles from "./StakeHedron.module.css";
 
 function StakeHedron() {
-  const [stakeAmount, setStakeAmount] = useState(0);
+  const [stakeAmount, setStakeAmount] = useState("");
   const [stakeLength, setStakeLength] = useState(30);
   const [stakeCount, setStakeCount] = useState(0);
   const { data } = useHedronData();
-  const { balance = 0, supply = 0 } = data || {};
+  const { balance, supply } = data || {};
 
   const getMinNumStakes = useCallback(() => {
     if (!stakeAmount || !stakeLength || !supply) {
       return 0;
     }
-    const portionOfSupply = stakeAmount / supply;
     const maxPortionOfSupply = stakeLengthToMaxPortionOfSupply.get(stakeLength);
     if (!maxPortionOfSupply) {
       return 0;
     }
-    return Math.ceil(portionOfSupply / maxPortionOfSupply);
+    const stakerClass = parseHedron(stakeAmount).mul(1e15).div(supply);
+    return stakerClass.div(maxPortionOfSupply * 1e15).toNumber() + 1;
   }, [stakeAmount, stakeLength, supply]);
 
-  const getMaxAmountPerStake = () => {
+  const getMaxAmountPerStake = (): number => {
     if (!supply) {
       return 0;
     }
@@ -35,23 +37,31 @@ function StakeHedron() {
     if (!maxPortionOfSupply) {
       return 0;
     }
-    return supply * maxPortionOfSupply - 1;
+    return Number(formatHedron(supply)) * maxPortionOfSupply;
   };
 
   const handleAmountInput = (e: ChangeEvent<HTMLInputElement>) => {
-    e.target.validity.valid && setStakeAmount(Number(e.target.value));
+    const cleanedInput = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*)\./g, "$1");
+    setStakeAmount(cleanedInput);
   };
 
   useEffect(() => {
     setStakeCount(getMinNumStakes());
   }, [getMinNumStakes]);
 
+  const writeHookEnabled =
+    balance &&
+    parseHedron(stakeAmount).lte(balance) &&
+    parseHedron(stakeAmount).gt(0);
+
   const { config } = usePrepareContractWrite({
     address: icosaAddress,
     abi: icosaABI,
     functionName: "hdrnStakeStart",
-    args: [Number(stakeAmount) * 1000000000],
-    enabled: Number(stakeAmount) > 0 && Number(stakeAmount) <= balance,
+    args: [parseHedron(stakeAmount)],
+    enabled: writeHookEnabled,
   });
   const { isLoading, isSuccess, write } = useContractWrite(config);
 
@@ -74,7 +84,7 @@ function StakeHedron() {
             className="flex-grow rounded bg-white px-4 py-2 font-bold text-black hover:bg-gray-100"
           />
           <button
-            onClick={() => setStakeAmount(balance)}
+            onClick={() => setStakeAmount(formatHedron(balance))}
             className="rounded bg-gray-400 px-4 py-2 font-bold text-black hover:bg-gray-500"
           >
             Max
@@ -99,7 +109,9 @@ function StakeHedron() {
           <div className="w-full">
             <div>Max Stake</div>
             <input
-              value={getMaxAmountPerStake().toLocaleString()}
+              value={`${commify(
+                Math.floor(getMaxAmountPerStake() * 100) / 100
+              )} ICSA`}
               readOnly
               disabled
               className="w-full rounded bg-gray-200 px-4 py-2 font-bold text-black"

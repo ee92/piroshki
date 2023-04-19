@@ -1,4 +1,4 @@
-import { NativeStakeData } from "../types/TokenData";
+import { NativeStakePayload } from "../types/TokenData";
 
 export const stakeLengthToMaxPortionOfSupply = new Map([
   [360, 1],
@@ -17,7 +17,7 @@ export const stakeLengthToClassEmoji = new Map([
 ]);
 
 export const getStakeDaysRemaining = (
-  stake: NativeStakeData,
+  stake: NativeStakePayload,
   currentDay: number
 ) => {
   const { capitalAdded, stakeStart, minStakeLength } = stake;

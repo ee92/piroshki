@@ -1,34 +1,30 @@
-import { ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useAccount, useContractReads } from "wagmi";
 import {
   IcosaBalance,
   IcosaCurrentDay,
-  IcosaDecimals,
   IcosaSupply,
+  NativeStakePayload,
   NativeStakeData,
-  NativeStakeDisplayData,
 } from "../types/TokenData";
 import { icosaABI, icosaAddress } from "../utils/icosa";
 import { getStakeDaysRemaining } from "../utils/staking";
 
 type IcosaPayload = [
   IcosaBalance,
-  IcosaDecimals,
   IcosaSupply,
   IcosaCurrentDay,
-  NativeStakeData,
-  NativeStakeData
+  NativeStakePayload,
+  NativeStakePayload
 ];
 type IcosaData = {
-  supply: number;
-  balance: number;
+  supply: BigNumber;
+  balance: BigNumber;
   stakes: {
-    hdrn: NativeStakeDisplayData;
-    icsa: NativeStakeDisplayData;
+    hdrn: NativeStakeData;
+    icsa: NativeStakeData;
   };
 };
-
-const TRILLION_DECIMALS = 12;
 
 function useIcosaData() {
   const { address } = useAccount();
@@ -40,11 +36,6 @@ function useIcosaData() {
         abi: icosaABI,
         functionName: "balanceOf",
         args: [address],
-      },
-      {
-        address: icosaAddress,
-        abi: icosaABI,
-        functionName: "decimals",
       },
       {
         address: icosaAddress,
@@ -70,33 +61,19 @@ function useIcosaData() {
       },
     ],
     select: (data): IcosaData => {
-      const [balance, decimals, supply, currentDay, icsaStake, hdrnStake] =
+      const [balance, supply, currentDay, icsaStake, hdrnStake] =
         data as IcosaPayload;
       return {
-        balance: Number(ethers.utils.formatUnits(balance, decimals)),
-        supply: Number(ethers.utils.formatUnits(supply, decimals)),
+        balance,
+        supply,
         stakes: {
           hdrn: {
-            isActive: hdrnStake.isActive,
-            minStakeLength: hdrnStake.minStakeLength,
-            stakeAmount: Number(
-              ethers.utils.formatUnits(hdrnStake.stakeAmount, decimals)
-            ),
+            ...hdrnStake,
             stakeDaysRemaining: getStakeDaysRemaining(hdrnStake, currentDay),
-            stakePoints: Number(
-              ethers.utils.formatUnits(hdrnStake.stakePoints, TRILLION_DECIMALS)
-            ),
           },
           icsa: {
-            isActive: icsaStake.isActive,
-            minStakeLength: icsaStake.minStakeLength,
-            stakeAmount: Number(
-              ethers.utils.formatUnits(icsaStake.stakeAmount, decimals)
-            ),
+            ...icsaStake,
             stakeDaysRemaining: getStakeDaysRemaining(icsaStake, currentDay),
-            stakePoints: Number(
-              ethers.utils.formatUnits(icsaStake.stakePoints, TRILLION_DECIMALS)
-            ),
           },
         },
       };

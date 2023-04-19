@@ -13,7 +13,7 @@ export type IcosaSupply = BigNumber;
 export type IcosaDecimals = number;
 export type IcosaCurrentDay = number;
 
-export type NativeStakeData = {
+export type NativeStakePayload = {
   stakeStart: number;
   capitalAdded: number;
   stakePoints: BigNumber;
@@ -24,10 +24,10 @@ export type NativeStakeData = {
   minStakeLength: number;
 };
 
-export type NativeStakeDisplayData = {
+export type NativeStakeData = {
   isActive: boolean;
-  stakePoints: number;
-  stakeAmount: number;
+  stakePoints: BigNumber;
+  stakeAmount: BigNumber;
   minStakeLength: number;
   stakeDaysRemaining: number;
 };

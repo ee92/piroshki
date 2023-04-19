@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import useIcosaData from "../../hooks/useIcosa";
+import { formatIcosa, parseIcosa } from "../../utils/format";
 import {
   stakeLengthToClassEmoji,
   stakeLengthToMaxPortionOfSupply,
@@ -12,18 +13,18 @@ function StakeIcosa() {
   const [stakeLength, setStakeLength] = useState(30);
   const [stakeCount, setStakeCount] = useState(0);
   const { data } = useIcosaData();
-  const { balance = 0, supply = 0 } = data || {};
+  const { balance, supply } = data || {};
 
   const getMinNumStakes = useCallback(() => {
     if (!stakeAmount || !stakeLength || !supply) {
       return 0;
     }
-    const portionOfSupply = Number(stakeAmount) / supply;
     const maxPortionOfSupply = stakeLengthToMaxPortionOfSupply.get(stakeLength);
     if (!maxPortionOfSupply) {
       return 0;
     }
-    return Math.ceil(portionOfSupply / maxPortionOfSupply);
+    const stakerClass = parseIcosa(stakeAmount).mul(1e15).div(supply);
+    return stakerClass.div(maxPortionOfSupply * 1e15).toNumber() + 1;
   }, [stakeAmount, stakeLength, supply]);
 
   const getMaxAmountPerStake = () => {
@@ -34,33 +35,38 @@ function StakeIcosa() {
     if (!maxPortionOfSupply) {
       return 0;
     }
-    return supply * maxPortionOfSupply;
+    return Number(formatIcosa(supply)) * maxPortionOfSupply;
   };
 
   useEffect(() => {
     setStakeCount(getMinNumStakes());
   }, [getMinNumStakes]);
 
+  const writeHookEnabled =
+    balance &&
+    parseIcosa(stakeAmount).lte(balance) &&
+    parseIcosa(stakeAmount).gt(0);
+
   const { config } = usePrepareContractWrite({
     address: icosaAddress,
     abi: icosaABI,
     functionName: "icsaStakeStart",
     args: [Number(stakeAmount) * 1000000000],
-    enabled: Number(stakeAmount) > 0 && Number(stakeAmount) <= balance,
+    enabled: writeHookEnabled,
   });
   const { isLoading, isSuccess, write } = useContractWrite(config);
+
+  const handleStakeClick = () => {
+    if (write) {
+      write();
+    }
+  };
 
   const handleAmountInput = (e: ChangeEvent<HTMLInputElement>) => {
     const cleanedInput = e.target.value
       .replace(/[^0-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
     setStakeAmount(cleanedInput);
-  };
-
-  const handleStakeClick = () => {
-    if (write) {
-      write();
-    }
   };
 
   return (
@@ -74,7 +80,7 @@ function StakeIcosa() {
             className="flex-grow rounded bg-white px-4 py-2 font-bold text-black hover:bg-gray-100"
           />
           <button
-            onClick={() => setStakeAmount(balance.toString())}
+            onClick={() => setStakeAmount(formatIcosa(balance))}
             className="rounded bg-gray-400 px-4 py-2 font-bold text-black hover:bg-gray-500"
           >
             Max
@@ -125,7 +131,6 @@ function StakeIcosa() {
           <button
             className="rounded bg-emerald-400 px-4 py-2 font-bold text-black hover:bg-emerald-500"
             onClick={handleStakeClick}
-            disabled={isLoading}
           >
             Stake
           </button>

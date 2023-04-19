@@ -1,12 +1,12 @@
-import { ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useAccount, useContractReads } from "wagmi";
-import { HexBalance, HexDecimals, HexSupply } from "../types/TokenData";
+import { HexBalance, HexSupply } from "../types/TokenData";
 import { hexABI, hexAddress } from "../utils/hex";
 
-type hexPayload = [HexBalance, HexDecimals, HexSupply];
+type hexPayload = [HexBalance, HexSupply];
 type hexData = {
-  supply: number;
-  balance: number;
+  supply: BigNumber;
+  balance: BigNumber;
 };
 
 function usehexData() {
@@ -23,20 +23,12 @@ function usehexData() {
       {
         address: hexAddress,
         abi: hexABI,
-        functionName: "decimals",
-      },
-      {
-        address: hexAddress,
-        abi: hexABI,
         functionName: "totalSupply",
       },
     ],
     select: (data): hexData => {
-      const [balance, decimals, supply] = data as hexPayload;
-      return {
-        balance: Number(ethers.utils.formatUnits(balance, decimals)),
-        supply: Number(ethers.utils.formatUnits(supply, decimals)),
-      };
+      const [balance, supply] = data as hexPayload;
+      return { balance, supply };
     },
   });
 }
