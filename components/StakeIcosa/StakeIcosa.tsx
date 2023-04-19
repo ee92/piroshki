@@ -51,7 +51,7 @@ function StakeIcosa() {
     address: icosaAddress,
     abi: icosaABI,
     functionName: "icsaStakeStart",
-    args: [Number(stakeAmount) * 1000000000],
+    args: [parseIcosa(stakeAmount)],
     enabled: writeHookEnabled,
   });
   const { isLoading, isSuccess, write } = useContractWrite(config);
