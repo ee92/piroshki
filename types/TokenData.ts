@@ -13,6 +13,9 @@ export type IcosaSupply = BigNumber;
 export type IcosaDecimals = number;
 export type IcosaCurrentDay = number;
 
+export type HdrnPayout = BigNumber;
+export type IcsaPayout = BigNumber;
+
 export type NativeStakePayload = {
   stakeStart: number;
   capitalAdded: number;
@@ -30,4 +33,5 @@ export type NativeStakeData = {
   stakeAmount: BigNumber;
   minStakeLength: number;
   stakeDaysRemaining: number;
+  currentPayout: BigNumber;
 };

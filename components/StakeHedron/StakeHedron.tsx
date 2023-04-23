@@ -2,20 +2,28 @@ import { commify } from "ethers/lib/utils.js";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import useHedronData from "../../hooks/useHedron";
+import useStakeStart, { useApproveHedron } from "../../hooks/useStakeStart";
 import { formatHedron, parseHedron } from "../../utils/format";
 import { icosaABI, icosaAddress } from "../../utils/icosa";
 import {
   stakeLengthToClassEmoji,
   stakeLengthToMaxPortionOfSupply,
 } from "../../utils/staking";
-import styles from "./StakeHedron.module.css";
 
 function StakeHedron() {
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakeLength, setStakeLength] = useState(30);
   const [stakeCount, setStakeCount] = useState(0);
   const { data } = useHedronData();
-  const { balance, supply } = data || {};
+  const { balance, supply, icosaAllowance } = data || {};
+
+  const allowanceTooLow = parseHedron(stakeAmount).gt(icosaAllowance || 0);
+
+  const stakeHedronEnabled =
+    balance &&
+    !allowanceTooLow &&
+    parseHedron(stakeAmount).lte(balance) &&
+    parseHedron(stakeAmount).gt(0);
 
   const getMinNumStakes = useCallback(() => {
     if (!stakeAmount || !stakeLength || !supply) {
@@ -51,28 +59,36 @@ function StakeHedron() {
     setStakeCount(getMinNumStakes());
   }, [getMinNumStakes]);
 
-  const writeHookEnabled =
-    balance &&
-    parseHedron(stakeAmount).lte(balance) &&
-    parseHedron(stakeAmount).gt(0);
-
-  const { config } = usePrepareContractWrite({
-    address: icosaAddress,
-    abi: icosaABI,
-    functionName: "hdrnStakeStart",
-    args: [parseHedron(stakeAmount)],
-    enabled: writeHookEnabled,
+  const {
+    // isLoading: stakeIcosaLoading,
+    // isSuccess: stakeIcosaSuccess,
+    write: stakeHedron,
+  } = useStakeStart({
+    type: "HDRN",
+    amount: parseHedron(stakeAmount),
+    enabled: !!stakeHedronEnabled,
   });
-  const { isLoading, isSuccess, write } = useContractWrite(config);
+
+  const { write: approveHedron } = useApproveHedron({
+    amount: parseHedron(stakeAmount),
+    enabled: !!allowanceTooLow,
+  });
 
   const handleStakeClick = () => {
-    if (write) {
-      write();
+    if (stakeHedron) {
+      stakeHedron();
+    }
+  };
+
+  const handleApproveHedron = () => {
+    if (approveHedron) {
+      approveHedron();
     }
   };
 
   return (
     <div>
+      icosa allowance: {icosaAllowance?.toString()}
       <div className="pb-4">
         <div>Amount to stake</div>
         <div className="flex">
@@ -134,12 +150,21 @@ function StakeHedron() {
             disabled
             className="flex-grow rounded bg-gray-200 px-4 py-2 font-bold text-black"
           />
-          <button
-            className="rounded bg-emerald-400 px-4 py-2 font-bold text-black hover:bg-emerald-500"
-            onClick={handleStakeClick}
-          >
-            Stake
-          </button>
+          {allowanceTooLow ? (
+            <button
+              className="rounded bg-emerald-400 px-4 py-2 font-bold text-black hover:bg-emerald-500"
+              onClick={handleApproveHedron}
+            >
+              Approve HDRN
+            </button>
+          ) : (
+            <button
+              className="rounded bg-emerald-400 px-4 py-2 font-bold text-black hover:bg-emerald-500"
+              onClick={handleStakeClick}
+            >
+              Stake
+            </button>
+          )}
         </div>
       </div>
     </div>

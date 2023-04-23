@@ -5,15 +5,13 @@ import {
   stakeLengthToClassEmoji,
   stakeLengthToMaxPortionOfSupply,
 } from "../../utils/staking";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
-import { icosaABI, icosaAddress } from "../../utils/icosa";
+import useStakeStart from "../../hooks/useStakeStart";
 
 function StakeIcosa() {
   const [stakeAmount, setStakeAmount] = useState("");
   const [stakeLength, setStakeLength] = useState(30);
   const [stakeCount, setStakeCount] = useState(0);
-  const { data } = useIcosaData();
-  const { balance, supply } = data || {};
+  const { balance, supply } = useIcosaData();
 
   const getMinNumStakes = useCallback(() => {
     if (!stakeAmount || !stakeLength || !supply) {
@@ -47,18 +45,19 @@ function StakeIcosa() {
     parseIcosa(stakeAmount).lte(balance) &&
     parseIcosa(stakeAmount).gt(0);
 
-  const { config } = usePrepareContractWrite({
-    address: icosaAddress,
-    abi: icosaABI,
-    functionName: "icsaStakeStart",
-    args: [parseIcosa(stakeAmount)],
-    enabled: writeHookEnabled,
+  const {
+    // isLoading: stakeIcosaLoading,
+    // isSuccess: stakeIcosaSuccess,
+    write: stakeIcosa,
+  } = useStakeStart({
+    type: "ICSA",
+    amount: parseIcosa(stakeAmount),
+    enabled: !!writeHookEnabled,
   });
-  const { isLoading, isSuccess, write } = useContractWrite(config);
 
   const handleStakeClick = () => {
-    if (write) {
-      write();
+    if (stakeIcosa) {
+      stakeIcosa();
     }
   };
 

@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 const HEX_DECIMALS = 8;
 const HEDRON_DECIMALS = 9;

@@ -1,12 +1,16 @@
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useAccount, useContractReads } from "wagmi";
 import { HedronBalance, HedronSupply } from "../types/TokenData";
 import { hedronABI, hedronAddress } from "../utils/hedron";
+import { icosaAddress } from "../utils/icosa";
 
-type HedronPayload = [HedronBalance, HedronSupply];
+type IcosaAllowance = BigNumber;
+
+type HedronPayload = [HedronBalance, HedronSupply, IcosaAllowance];
 type HedronData = {
   supply: BigNumber;
   balance: BigNumber;
+  icosaAllowance: BigNumber;
 };
 
 function useHedronData() {
@@ -25,10 +29,16 @@ function useHedronData() {
         abi: hedronABI,
         functionName: "totalSupply",
       },
+      {
+        address: hedronAddress,
+        abi: hedronABI,
+        functionName: "allowance",
+        args: [address, icosaAddress],
+      },
     ],
     select: (data): HedronData => {
-      const [balance, supply] = data as HedronPayload;
-      return { balance, supply };
+      const [balance, supply, icosaAllowance] = data as HedronPayload;
+      return { balance, supply, icosaAllowance };
     },
   });
 }

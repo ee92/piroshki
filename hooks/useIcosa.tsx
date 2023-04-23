@@ -6,9 +6,11 @@ import {
   IcosaSupply,
   NativeStakePayload,
   NativeStakeData,
+  HdrnPayout,
+  IcsaPayout,
 } from "../types/TokenData";
 import { icosaABI, icosaAddress } from "../utils/icosa";
-import { getStakeDaysRemaining } from "../utils/staking";
+import { getCurrentPayoutHdrn, getStakeDaysRemaining } from "../utils/staking";
 
 type IcosaPayload = [
   IcosaBalance,
@@ -20,15 +22,24 @@ type IcosaPayload = [
 type IcosaData = {
   supply: BigNumber;
   balance: BigNumber;
+  currentDay: number;
   stakes: {
     hdrn: NativeStakeData;
     icsa: NativeStakeData;
   };
 };
+type PayoutData = [
+  HdrnPayout,
+  HdrnPayout
+  // IcsaPayout,
+  // IcsaPayout,
+  // HdrnPayout,
+  // HdrnPayout
+];
 
-function useIcosaData() {
+function useIcosaData(): IcosaData {
   const { address } = useAccount();
-  return useContractReads({
+  const { data: stakeData = [] } = useContractReads({
     enabled: !!address,
     contracts: [
       {
@@ -60,25 +71,85 @@ function useIcosaData() {
         args: [address],
       },
     ],
-    select: (data): IcosaData => {
-      const [balance, supply, currentDay, icsaStake, hdrnStake] =
-        data as IcosaPayload;
-      return {
-        balance,
-        supply,
-        stakes: {
-          hdrn: {
-            ...hdrnStake,
-            stakeDaysRemaining: getStakeDaysRemaining(hdrnStake, currentDay),
-          },
-          icsa: {
-            ...icsaStake,
-            stakeDaysRemaining: getStakeDaysRemaining(icsaStake, currentDay),
-          },
-        },
-      };
-    },
   });
+
+  const [balance, supply, currentDay, icsaStake, hdrnStake] =
+    stakeData as IcosaPayload;
+
+  const { data: payoutData = [] } = useContractReads({
+    enabled: !!address && stakeData.length !== 0,
+    contracts: [
+      {
+        address: icosaAddress,
+        abi: icosaABI,
+        functionName: "hdrnPoolPayout",
+        args: [currentDay],
+      },
+      {
+        address: icosaAddress,
+        abi: icosaABI,
+        functionName: "hdrnPoolPayout",
+        args: [hdrnStake?.capitalAdded],
+      },
+      // {
+      //   address: icosaAddress,
+      //   abi: icosaABI,
+      //   functionName: "icsaPoolPayoutHdrn",
+      //   args: [currentDay],
+      // },
+      // {
+      //   address: icosaAddress,
+      //   abi: icosaABI,
+      //   functionName: "icsaPoolPayoutHdrn",
+      //   args: [icsaStake?.capitalAdded],
+      // },
+      // {
+      //   address: icosaAddress,
+      //   abi: icosaABI,
+      //   functionName: "icsaPoolPayoutIcsa",
+      //   args: [currentDay],
+      // },
+      // {
+      //   address: icosaAddress,
+      //   abi: icosaABI,
+      //   functionName: "icsaPoolPayoutIcsa",
+      //   args: [icsaStake?.capitalAdded],
+      // },
+    ],
+  });
+
+  const [
+    hdrnPayoutCurrent,
+    hdrnPayoutStart,
+    // icsaPayoutCurrent,
+    // icsaPayoutStart,
+  ] = payoutData as PayoutData;
+
+  return {
+    balance,
+    supply,
+    currentDay,
+    stakes: {
+      hdrn: {
+        ...hdrnStake,
+        stakeDaysRemaining: getStakeDaysRemaining(hdrnStake, currentDay),
+        currentPayout: getCurrentPayoutHdrn(
+          hdrnStake,
+          hdrnPayoutStart,
+          hdrnPayoutCurrent
+        ),
+      },
+      icsa: {
+        ...icsaStake,
+        stakeDaysRemaining: getStakeDaysRemaining(icsaStake, currentDay),
+        currentPayout: getCurrentPayoutHdrn(
+          hdrnStake,
+          hdrnPayoutStart,
+          hdrnPayoutCurrent
+        ),
+      },
+    },
+  };
 }
 
 export default useIcosaData;

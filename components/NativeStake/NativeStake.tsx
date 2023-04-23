@@ -27,6 +27,7 @@ function NativeStake(props: NativeStakeProps) {
           </div>
           <div>{stake.stakeDaysRemaining} days remaining</div>
           <div>{stake.stakePoints.toLocaleString()} Points</div>
+          <div>{format(stake.currentPayout)} earned</div>
         </div>
       ) : (
         <div>You currently don't have a native {type} stake</div>

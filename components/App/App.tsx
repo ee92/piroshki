@@ -1,5 +1,4 @@
 "use client";
-import styles from "./App.module.css";
 
 import React, { useEffect, useState } from "react";
 
@@ -17,7 +16,7 @@ import { commify } from "ethers/lib/utils.js";
 export default function App() {
   const { data: hexData } = useHexData();
   const { data: hedronData } = useHedronData();
-  const { data: icosaData } = useIcosaData();
+  const icosaData = useIcosaData();
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
