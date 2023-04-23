@@ -10,7 +10,7 @@ import {
   IcsaPayout,
 } from "../types/TokenData";
 import { icosaABI, icosaAddress } from "../utils/icosa";
-import { getCurrentPayoutHdrn, getStakeDaysRemaining } from "../utils/staking";
+import { getCurrentPayout, getStakeDaysRemaining } from "../utils/staking";
 
 type IcosaPayload = [
   IcosaBalance,
@@ -29,12 +29,12 @@ type IcosaData = {
   };
 };
 type PayoutData = [
+  IcsaPayout,
+  IcsaPayout,
+  IcsaPayout,
+  IcsaPayout,
   HdrnPayout,
   HdrnPayout
-  // IcsaPayout,
-  // IcsaPayout,
-  // HdrnPayout,
-  // HdrnPayout
 ];
 
 function useIcosaData(): IcosaData {
@@ -91,38 +91,40 @@ function useIcosaData(): IcosaData {
         functionName: "hdrnPoolPayout",
         args: [hdrnStake?.capitalAdded],
       },
-      // {
-      //   address: icosaAddress,
-      //   abi: icosaABI,
-      //   functionName: "icsaPoolPayoutHdrn",
-      //   args: [currentDay],
-      // },
-      // {
-      //   address: icosaAddress,
-      //   abi: icosaABI,
-      //   functionName: "icsaPoolPayoutHdrn",
-      //   args: [icsaStake?.capitalAdded],
-      // },
-      // {
-      //   address: icosaAddress,
-      //   abi: icosaABI,
-      //   functionName: "icsaPoolPayoutIcsa",
-      //   args: [currentDay],
-      // },
-      // {
-      //   address: icosaAddress,
-      //   abi: icosaABI,
-      //   functionName: "icsaPoolPayoutIcsa",
-      //   args: [icsaStake?.capitalAdded],
-      // },
+      {
+        address: icosaAddress,
+        abi: icosaABI,
+        functionName: "icsaPoolPayoutHdrn",
+        args: [currentDay],
+      },
+      {
+        address: icosaAddress,
+        abi: icosaABI,
+        functionName: "icsaPoolPayoutHdrn",
+        args: [icsaStake?.capitalAdded],
+      },
+      {
+        address: icosaAddress,
+        abi: icosaABI,
+        functionName: "icsaPoolPayoutIcsa",
+        args: [currentDay],
+      },
+      {
+        address: icosaAddress,
+        abi: icosaABI,
+        functionName: "icsaPoolPayoutIcsa",
+        args: [icsaStake?.capitalAdded],
+      },
     ],
   });
 
   const [
     hdrnPayoutCurrent,
     hdrnPayoutStart,
-    // icsaPayoutCurrent,
-    // icsaPayoutStart,
+    icsaPayoutHdrnCurrent,
+    icsaPayoutHdrnStart,
+    icsaPayoutIcsaCurrent,
+    icsaPayoutIcsaStart,
   ] = payoutData as PayoutData;
 
   return {
@@ -133,7 +135,7 @@ function useIcosaData(): IcosaData {
       hdrn: {
         ...hdrnStake,
         stakeDaysRemaining: getStakeDaysRemaining(hdrnStake, currentDay),
-        currentPayout: getCurrentPayoutHdrn(
+        currentPayoutIcsa: getCurrentPayout(
           hdrnStake,
           hdrnPayoutStart,
           hdrnPayoutCurrent
@@ -142,10 +144,15 @@ function useIcosaData(): IcosaData {
       icsa: {
         ...icsaStake,
         stakeDaysRemaining: getStakeDaysRemaining(icsaStake, currentDay),
-        currentPayout: getCurrentPayoutHdrn(
-          hdrnStake,
-          hdrnPayoutStart,
-          hdrnPayoutCurrent
+        currentPayoutIcsa: getCurrentPayout(
+          icsaStake,
+          icsaPayoutIcsaStart,
+          icsaPayoutIcsaCurrent
+        ),
+        currentPayoutHdrn: getCurrentPayout(
+          icsaStake,
+          icsaPayoutHdrnStart,
+          icsaPayoutHdrnCurrent
         ),
       },
     },

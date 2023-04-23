@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { HdrnPayout, IcsaPayout, NativeStakePayload } from "../types/TokenData";
+import { DECIMAL_RESOLUTION } from "./format";
 
 export const stakeLengthToMaxPortionOfSupply = new Map([
   [360, 1],
@@ -31,15 +32,16 @@ export const getStakeDaysRemaining = (
   return daysLeft > 0 ? daysLeft : 0;
 };
 
-export const getCurrentPayoutHdrn = (
+export const getCurrentPayout = (
   stake?: NativeStakePayload,
-  startPoolPayout?: HdrnPayout,
-  currentPoolPayout?: HdrnPayout
+  startPoolPayout?: HdrnPayout | IcsaPayout,
+  currentPoolPayout?: HdrnPayout | IcsaPayout
 ) => {
   if (!stake || !startPoolPayout || !currentPoolPayout) {
     return ethers.utils.parseUnits("0");
   }
   const payoutPerPoint = currentPoolPayout.sub(startPoolPayout);
-  const payout = stake.payoutPreCapitalAddIcsa.add(payoutPerPoint.mul(stake.stakePoints));
+  const payoutFromStakePoints = stake.stakePoints.mul(payoutPerPoint).div(DECIMAL_RESOLUTION);
+  const payout = stake.payoutPreCapitalAddIcsa.add(payoutFromStakePoints);
   return payout;
 }

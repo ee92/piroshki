@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { commify } from "ethers/lib/utils.js";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
@@ -33,8 +34,20 @@ function StakeHedron() {
     if (!maxPortionOfSupply) {
       return 0;
     }
-    const stakerClass = parseHedron(stakeAmount).mul(1e15).div(supply);
-    return stakerClass.div(maxPortionOfSupply * 1e15).toNumber() + 1;
+
+    const totalAmountToStake = parseHedron(stakeAmount);
+    const maxTokensPerStake = supply
+      .mul(BigNumber.from((maxPortionOfSupply * 1e18).toFixed(0)))
+      .div(BigNumber.from((1e18).toString()));
+    const numberOfStakes = totalAmountToStake
+      .div(maxTokensPerStake)
+      .add(
+        totalAmountToStake.mod(maxTokensPerStake).isZero()
+          ? BigNumber.from(0)
+          : BigNumber.from(1)
+      );
+
+    return numberOfStakes.toNumber();
   }, [stakeAmount, stakeLength, supply]);
 
   const getMaxAmountPerStake = (): number => {

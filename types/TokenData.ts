@@ -33,5 +33,6 @@ export type NativeStakeData = {
   stakeAmount: BigNumber;
   minStakeLength: number;
   stakeDaysRemaining: number;
-  currentPayout: BigNumber;
+  currentPayoutIcsa: BigNumber;
+  currentPayoutHdrn?: BigNumber;
 };

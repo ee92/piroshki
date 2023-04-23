@@ -4,6 +4,8 @@ const HEX_DECIMALS = 8;
 const HEDRON_DECIMALS = 9;
 const ICOSA_DECIMALS = 9;
 
+export const DECIMAL_RESOLUTION = BigNumber.from('1000000000000000000');
+
 /* 
 * format tokens (string) to units (BigNumber)
 */
