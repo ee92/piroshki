@@ -8,6 +8,7 @@ import {
   ConnectKitProvider,
   getDefaultClient,
 } from "connectkit";
+import Image from "next/image";
 
 const client = createClient(
   getDefaultClient({
@@ -24,8 +25,8 @@ function App({ Component, pageProps }: AppProps) {
       <ConnectKitProvider>
         <header className="flex justify-between p-4">
           <div className="flex items-center gap-4">
-            <img src="./piroshki-logo.png" className="w-8" />
-            <div className="text-2xl text-white">Piroshki</div>
+            <Image src="/piroshki-logo.png" alt="logo" className="w-8" width={48} height={48}/>
+            <div className="text-2xl">Piroshki</div>
           </div>
           <ConnectKitButton />
         </header>
