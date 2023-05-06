@@ -6,7 +6,7 @@ export default function Home() {
     <>
       <Head>
         <link rel="shortcut icon" href="/piroshki-logo.png" />
-        <title>Piroshki</title>
+        <title>Piroshki - Stake HEX, HDRN and ICSA</title>
       </Head>
       <App />
     </>
