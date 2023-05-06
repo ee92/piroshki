@@ -23,10 +23,10 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={client}>
       <ConnectKitProvider>
-        <header className="flex justify-between p-4">
-          <div className="flex items-center gap-4">
+        <header className="flex justify-between items-center px-6 py-10 border-b-2">
+          <div className="flex items-center gap-2">
             <Image src="/piroshki-logo.png" alt="logo" className="w-8" width={48} height={48}/>
-            <div className="text-2xl">Piroshki</div>
+            <div className="text-4xl font-black tracking-wide">Piroshki</div>
           </div>
           <ConnectKitButton />
         </header>
