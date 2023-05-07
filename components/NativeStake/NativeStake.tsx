@@ -26,13 +26,13 @@ function NativeStake(props: NativeStakeProps) {
         <>
         <div className="flex items-center justify-between py-4">
             <p className={text}><span className={number}>{format(stake.stakeAmount)}</span> {type} staked</p>
-            <p><span className={number}>{stake.minStakeLength}</span> day stake</p>
+            <p className={text}><span className={number}>{stake.minStakeLength}</span> day stake</p>
             <p className={text}><span className={number}>{stake.stakeDaysRemaining}</span> days remaining</p>
         </div>
         <div className="flex items-center justify-between">
-            {/* {stake.currentPayoutHdrn && ( */}
+            {stake.currentPayoutHdrn && (
               <p className={text}><span className={number}>{formatHedron(stake.currentPayoutHdrn)}</span> HDRN earned</p>
-            {/* )} */}
+            )}
             <p className={text}><span className={number}>{formatIcosa(stake.currentPayoutIcsa)}</span> ICSA earned</p>
             <p className={text}><span className={number}>{stake.stakePoints.toLocaleString()}</span> Points</p>
         </div>

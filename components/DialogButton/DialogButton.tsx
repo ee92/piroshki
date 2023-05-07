@@ -13,7 +13,7 @@ function DialogButton(props: DialogButtonProps) {
   return (
     <>
       <button
-        className="rounded px-4 py-2 font-medium text-white bg-gradient-to-r from-pink-500 via-purple-500 to-blue-600 hover:from-purple-500 hover:to-pink-600"
+        className="rounded px-4 py-2 font-semibold text-white bg-gradient-to-r from-pink-500 via-purple-500 to-blue-600 hover:from-purple-500 hover:to-pink-600"
         onClick={() => setOpen(true)}
       >
         {title}
