@@ -103,7 +103,7 @@ function StakeHedron() {
     <div>
       <p className="text-lg">Icosa allowance: <span className="font-semibold">{icosaAllowance?.toString()}</span></p>
       <div className="py-2">
-        <p className="py-2 font-medium text-slate-600">Staking amount:</p>
+        <p className="py-2 font-medium text-slate-600">Staking amount</p>
         <div className="flex">
           <input
             type="text"
@@ -125,7 +125,7 @@ function StakeHedron() {
         <select
           value={stakeLength}
           onChange={(e) => setStakeLength(Number(e.target.value))}
-          className="h-full w-full rounded bg-white px-4 py-2 border border-slate-400 font-bold text-black hover:bg-zinc-100"
+          className="h-full w-full rounded bg-white p-2 border border-slate-400 font-bold text-black hover:bg-zinc-100"
         >
           <option value={30}>30 days</option>
           <option value={90}>90 days</option>
