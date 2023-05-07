@@ -28,25 +28,45 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <div className="flex gap-4">
+    <div className="flex flex-col gap-4 py-16 px-8">
+      <div className="flex pb-6">
         <Card>
-          <label htmlFor="hex">HEX</label>
-          <div id="hex">{commify(formatHex(hexData?.balance))}</div>
-        </Card>
-        <Card>
-          <label htmlFor="hdrn">HDRN</label>
-          <div id="hdrn">{commify(formatHedron(hedronData?.balance))}</div>
-          <DialogButton title="Stake Hedron" component={StakeHedron} />
-        </Card>
-        <Card>
-          <label htmlFor="icsa">ICSA</label>
-          <div id="icsa">{commify(formatIcosa(icosaData?.balance))}</div>
-          <DialogButton title="Stake Icosa" component={StakeIcosa} />
+          <label htmlFor="hex" className="font-bold text-2xl">HEX</label>
+          <div id="hex" className="text-lg text-slate-500">{commify(formatHex(hexData?.balance))}</div>
         </Card>
       </div>
-      <NativeStake type="HDRN" stake={icosaData?.stakes.hdrn} />
-      <NativeStake type="ICSA" stake={icosaData?.stakes.icsa} />
+      <div className="flex gap-4 border-b-4 border-dashed pb-12">
+        <Card>
+          <div className="flex justify-between">
+            <div>
+              <label htmlFor="hdrn" className="font-bold text-2xl">HDRN</label>
+              <div id="hdrn" className="text-lg text-slate-500">{commify(formatHedron(hedronData?.balance))}</div>
+            </div>
+            <div>
+              <DialogButton title="Stake Hedron" component={StakeHedron} />
+            </div>
+          </div>
+        </Card>
+        <Card>
+          <div className="flex justify-between">
+            <div>
+              <label htmlFor="icsa" className="font-bold text-2xl">ICSA</label>
+              <div id="icsa" className="text-lg text-slate-500">{commify(formatIcosa(icosaData?.balance))}</div>
+            </div>
+            <div>
+              <DialogButton title="Stake Icosa" component={StakeIcosa} />
+            </div>
+          </div>
+        </Card>
+      </div>
+      <div className="pt-8">
+        <div className="pb-10">
+          <NativeStake type="HDRN" stake={icosaData?.stakes.hdrn} />
+        </div>
+        <div>
+          <NativeStake type="ICSA" stake={icosaData?.stakes.icsa} />
+        </div>
+      </div>
     </div>
   );
 }

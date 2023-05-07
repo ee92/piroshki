@@ -70,56 +70,54 @@ function StakeIcosa() {
 
   return (
     <div>
-      <div className="pb-4">
-        <div>Amount to stake</div>
+      <div className="py-2">
+        <p className="py-2 font-medium text-slate-600">Staking amount</p>
         <div className="flex">
           <input
             value={stakeAmount || ""}
             onChange={handleAmountInput}
-            className="flex-grow rounded bg-white px-4 py-2 font-bold text-black hover:bg-gray-100"
+            className="flex-grow rounded bg-white px-4 py-2 border border-slate-400 font-bold text-black hover:bg-zinc-100 mr-4"
           />
           <button
             onClick={() => setStakeAmount(formatIcosa(balance))}
-            className="rounded bg-gray-400 px-4 py-2 font-bold text-black hover:bg-gray-500"
+            className="rounded bg-purple-700 px-4 py-2 font-semibold text-white hover:bg-purple-800"
           >
             Max
           </button>
         </div>
       </div>
-      <div className="pb-4">
-        <div className="flex justify-between gap-4">
-          <div className="flex w-full flex-col">
-            <div>Length</div>
-            <select
-              value={stakeLength}
-              onChange={(e) => setStakeLength(Number(e.target.value))}
-              className="h-full w-full rounded bg-white px-4 py-2 font-bold text-black hover:bg-gray-100"
-            >
-              <option value={30}>30 days</option>
-              <option value={90}>90 days</option>
-              <option value={180}>180 days</option>
-              <option value={270}>270 days</option>
-            </select>
-          </div>
-          <div className="w-full">
-            <div>Max Stake</div>
-            <input
-              value={`${Math.floor(getMaxAmountPerStake() * 100) / 100} ICSA`}
-              readOnly
-              disabled
-              className="w-full rounded bg-gray-200 px-4 py-2 font-bold text-black"
-            />
-          </div>
-          <div>
-            <div>Rank</div>
-            <div className="text-3xl">
-              {stakeLengthToClassEmoji.get(stakeLength)}
-            </div>
-          </div>
+      <div className="py-2">
+        <p className="py-2 font-medium text-slate-600">Staking Length</p>
+          <select
+            value={stakeLength}
+            onChange={(e) => setStakeLength(Number(e.target.value))}
+            className="h-full w-full rounded bg-white p-2 border border-slate-400 font-bold text-black hover:bg-zinc-100"
+          >
+            <option value={30}>30 days</option>
+            <option value={90}>90 days</option>
+            <option value={180}>180 days</option>
+            <option value={270}>270 days</option>
+          </select>
+      </div>
+      <div className="py-2 flex justify-between items-center">
+        <div className="w-full">
+          <p className="py-2 font-medium text-slate-600">Max Stake</p>
+          <input
+            value={`${Math.floor(getMaxAmountPerStake() * 100) / 100} ICSA`}
+            readOnly
+            disabled
+            className="w-full rounded bg-gray-200 px-4 py-2 font-bold text-black"
+          />
+        </div>
+        <div className="ml-6">
+          <p className="py-2 font-medium text-slate-600">Rank</p>
+          <div className="text-3xl">
+            {stakeLengthToClassEmoji.get(stakeLength)}
         </div>
       </div>
-      <div className="pb-4">
-        <div>Number of stakes</div>
+      </div>
+      <div className="py-2">
+        <p className="py-2 font-medium text-slate-600">Number of stakes</p>
         <div className="flex">
           <input
             value={stakeCount}
@@ -127,13 +125,15 @@ function StakeIcosa() {
             disabled
             className="flex-grow rounded bg-gray-200 px-4 py-2 font-bold text-black"
           />
-          <button
-            className="rounded bg-emerald-400 px-4 py-2 font-bold text-black hover:bg-emerald-500"
-            onClick={handleStakeClick}
-          >
-            Stake
-          </button>
         </div>
+      </div>
+      <div className="flex justify-end border-t border-slate-400 pt-4 mt-8">
+        <button
+          className="rounded px-4 py-2 font-medium text-white bg-gradient-to-r from-pink-500 via-purple-500 to-blue-600 hover:from-purple-500 hover:to-pink-600"
+          onClick={handleStakeClick}
+        >
+          Stake
+        </button>
       </div>
     </div>
   );

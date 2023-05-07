@@ -5,7 +5,7 @@ interface ICardProps {
 
 const Card: FC<ICardProps> = (props) => {
   return (
-    <div className="w-full rounded-2xl bg-gray-500 p-4">{props.children}</div>
+    <div className="w-full rounded-2xl p-8 border-2 border-black h-full">{props.children}</div>
   );
 };
 
